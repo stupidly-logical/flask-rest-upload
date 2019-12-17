@@ -70,13 +70,13 @@ def resume_upload():
 
 @app.route('/stop', methods=['GET', 'POST', 'PUT'])
 def stop_upload():
-    e.set()
     global STATUS
-    if STATUS != STATUSES[3]:
-        print('Already stopped', STATUS)
+    if STATUS != STATUSES[1] and STATUS != STATUSES[2]:
+        print('Stop not required', STATUS)
         resp = jsonify({'message': 'Already Stopped'})
         resp.status_code = 201
         return resp
+    e.set()
     STATUS = STATUSES[3]
     print('Stopping')
     resp = jsonify({'message':'Stopping'})
@@ -95,7 +95,9 @@ def start_upload():
         resp = jsonify({'message': 'No file part in the request'})
         resp.status_code = 400
         return resp
+    print('here1')
     file = request.files['file']
+    print('here2')
     if file.filename == '':
         resp = jsonify({'message': 'No file selected for uploading'})
         resp.status_code = 400
@@ -107,15 +109,18 @@ def start_upload():
         e.set()
         flag = 1
         STATUS = STATUSES[1]
+        print("Uplaoding file...")
         with open(filepath, 'wb') as newfile:
             for line in filestream:
                 e.wait()
                 if STATUS == STATUSES[3]:
                     flag = 0
                     break
+                print(line, sep='')
                 newfile.write(line)
         if flag == 0:
             STATUS = STATUSES[3]
+            os.remove(filepath)
             print("File upload was stopped")
             resp = jsonify({'message': 'File upload was stopped'})
             resp.status_code = 201
@@ -132,4 +137,4 @@ def start_upload():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True, threaded=True)

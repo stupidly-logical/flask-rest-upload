@@ -12,4 +12,4 @@ EXPOSE 5000
 
 ENTRYPOINT ["python"]
 
-CMD ["main.py"]
+CMD ["-u", "main.py"]
