@@ -116,7 +116,7 @@ def start_upload():
                 if STATUS == STATUSES[3]:
                     flag = 0
                     break
-                print(line, sep='')
+                print(line, sep='')             # comment this, this exists for debugging
                 newfile.write(line)
         if flag == 0:
             STATUS = STATUSES[3]
