@@ -135,6 +135,13 @@ def start_upload():
         resp.status_code = 400
         return resp
 
+@app.route('/', methods=['GET', 'POST', 'PUT'])
+def root():
+
+    global STATUS
+    resp = jsonify({'message': 'welcome','status': STATUS})
+    resp.status_code = 201
+    return resp
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True, threaded=True)
